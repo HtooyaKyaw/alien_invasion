@@ -14,7 +14,7 @@ class AlienInvasion:
 		pygame.init()
 		self.settings = Settings()
 
-		self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+		self.screen = pygame.display.set_mode((1200,800))
 		self.settings.screen_width = self.screen.get_rect().width
 		self.settings.screen_height = self.screen.get_rect().height
 		#setting screen width and height are created after fullscreen is created 
@@ -46,6 +46,8 @@ class AlienInvasion:
 				# 		self.bullets.remove(self.bullets)
 				self._update_bullets()
 				self._update_aliens()
+				if self.mouse_held_down:
+					self._fire_bullet()
 			self._update_screen()
 
 
@@ -65,11 +67,17 @@ class AlienInvasion:
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				mouse_pos = pygame.mouse.get_pos()
 				self._check_play_button(mouse_pos)
-
+				if event.button == 1:
+					self.mouse_held_down = True
+					self._fire_bullet()
+			elif event.type == pygame.MOUSEBUTTONUP:
+				if event.button == 1:  # Left mouse button
+					self.mouse_held_down = False
 			elif event.type == pygame.KEYDOWN:
 				self._check_keydown_events(event)
 			elif event.type == pygame.KEYUP:
 				self._check_keyup_events(event)
+
 		
 					
 	def _check_keydown_events(self,event):
@@ -167,10 +175,7 @@ class AlienInvasion:
 			for each_alien in range(number_of_aliens):
 				self._create_alien(each_alien, each_row)
 
-
-		#create the first row of alien
-		
-
+	#create the first row of alien
 	def _create_alien(self, each_alien, each_row):
 		alien = Alien(self)
 		alien_width = alien.rect.width
